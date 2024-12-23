@@ -2,41 +2,48 @@ package io.github.betterclient.ai.training;
 
 import io.github.betterclient.ai.neural.NeuralNetwork;
 
-public class NetworkTrainer {
+import java.util.List;
 
+public class NetworkTrainer {
     /**
-     * Train the given network using the input and target
+     * Train the given network using the given training data
      * <p></p>
      * TODO: <a href="https://youtu.be/hfMk-kjRv4c?t=938">Continue watching the explanation</a>
      * @param network the network to train (weights and biases)
-     * @param inputs expected inputs
-     * @param targets expected outputs for those inputs
+     * @param data Training Data
      */
-    public static void train(NeuralNetwork network, double[][] inputs, double[][] targets) {
-        TrainingDataPoint point = network.convert(inputs, targets);
+    public static void train(NeuralNetwork network, List<TrainingInput> data, int epochs, double h, double learnRate) {
+        for (int i = 0; i < epochs; i++) {
+            if(network.learn(data, h, learnRate) == 0) {
+                System.out.println("Training successful in " + i + " tries");
+                break;
+            }
 
-        System.out.println(point.cost());
+            if (i % (epochs / 10) == 0) {
+                //*System.out.println("Training " + ((i / (double)epochs) * 100) + "% complete.");
+            }
+        }
+
+        //System.out.println("Training 100.0% complete.");
     }
 
-    private static double getCost(NeuralNetwork network, double[] input, double[] expectedOutput) {
-        double[] actualOutput = network.forward(input);
+    private static double getCost(NeuralNetwork network, TrainingInput data) {
+        double[] actualOutput = network.forward(data.inputs);
         double cost = 0;
 
         for (int i = 0; i < actualOutput.length; i++) {
-            double error = actualOutput[i] - expectedOutput[i];
+            double error = actualOutput[i] - data.expected[i];
             cost += error * error;
         }
 
         return cost;
     }
 
-    public static double getCost(NeuralNetwork network, double[][] input, double[][] expectedOutput) {
+    public static double getCost(NeuralNetwork network, List<TrainingInput> inputs) {
         double cost = 0;
-
-        for (int i = 0; i < input.length; i++) {
-            cost += getCost(network, input[i], expectedOutput[i]);
+        for (TrainingInput input : inputs) {
+            cost += getCost(network, input);
         }
-
         return cost;
     }
 }
