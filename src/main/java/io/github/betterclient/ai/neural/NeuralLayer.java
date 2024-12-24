@@ -35,7 +35,7 @@ public class NeuralLayer {
     }
 
     public void learn(NeuralNetwork network, List<TrainingInput> data, float h, float currentCost, float learningRate) {
-
+        network.setupForwardingOptimization(this.before, data); //setup optimizing the layer before
         for (Neuron neuronIn : this.before.neurons) {
             for (Neuron neuronOut : this.neurons) {
                 float value = neuronIn.connectionWeights.get(neuronOut);
@@ -57,6 +57,7 @@ public class NeuralLayer {
                 currentCost = NetworkTrainer.getCost(network, data);
             }
         }
+        network.stopOptimizations();
 
         currentCost = NetworkTrainer.getCost(network, data);
 

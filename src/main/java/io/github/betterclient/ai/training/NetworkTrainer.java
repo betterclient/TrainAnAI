@@ -5,6 +5,8 @@ import io.github.betterclient.ai.neural.NeuralNetwork;
 import java.util.List;
 
 public class NetworkTrainer {
+    private static float lastCost;
+
     /**
      * Train the given network using the given training data
      * @param network the network to train (weights and biases)
@@ -18,6 +20,12 @@ public class NetworkTrainer {
                 printTime(start);
                 System.out.println("Training successful in " + i + " tries");
                 break;
+            }
+
+            System.out.println("Epoch: " + i + "/" + epochs + " complete. Current Cost is " + lastCost);
+
+            if (i % 20 == 0) {
+                System.gc(); //Just to clear memory a little
             }
         }
 
@@ -45,6 +53,7 @@ public class NetworkTrainer {
         for (TrainingInput input : inputs) {
             cost += getCost(network, input);
         }
+        lastCost = cost;
         return cost;
     }
 }
