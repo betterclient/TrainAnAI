@@ -15,15 +15,15 @@ public class NeuralLayer {
 
     public NeuralLayer(int layerCount) {
         for (int i = 0; i < layerCount; i++) {
-            neurons.add(new Neuron(0));
+            neurons.add(new Neuron(0f));
         }
     }
 
-    public double[] forward(double[] inputs) {
-        double[] weightedInputs = new double[neurons.size()];
+    public float[] forward(float[] inputs) {
+        float[] weightedInputs = new float[neurons.size()];
 
         for (int i = 0; i < neurons.size(); i++) {
-            double weightedInput = neurons.get(i).bias;
+            float weightedInput = neurons.get(i).bias;
 
             for (int i1 = 0; i1 < before.neurons.size(); i1++) {
                 weightedInput += inputs[i1] * before.neurons.get(i1).connectionWeights.get(neurons.get(i));
@@ -34,40 +34,49 @@ public class NeuralLayer {
         return weightedInputs;
     }
 
-    public void applyGradients(double learnRate) {
-        for (Neuron neuronOut : this.neurons) {
-            neuronOut.bias -= neuronOut.costGradientB * learnRate;
+    public void learn(NeuralNetwork network, List<TrainingInput> data, float h, float currentCost, float learningRate) {
 
-            for (Neuron neuronIn : this.before.neurons) {
-                neuronIn.connectionWeights.compute(
-                        neuronOut,
-                        (k, old) -> {
-                            System.out.println(old + " to -> " + (old - (neuronIn.costGradientW.get(neuronOut) * learnRate)) + " (did - " + (neuronIn.costGradientW.get(neuronOut) * learnRate) + ")");
-                            return old - (neuronIn.costGradientW.get(neuronOut) * learnRate);
-                        }
-                );
-            }
-        }
-    }
-
-    public void learn(NeuralNetwork network, List<TrainingInput> data, double h, double originalCost) {
         for (Neuron neuronIn : this.before.neurons) {
             for (Neuron neuronOut : this.neurons) {
-                double value = neuronIn.connectionWeights.get(neuronOut);
+                float value = neuronIn.connectionWeights.get(neuronOut);
                 neuronIn.connectionWeights.put(neuronOut, value + h);
 
-                //Put change in costGradientW
-                System.out.println("Original: " + originalCost + " new: " + NetworkTrainer.getCost(network, data) + " h: " + h + " out");
-                neuronIn.costGradientW.put(neuronOut, (NetworkTrainer.getCost(network, data) - originalCost) / h);
+                float cost = NetworkTrainer.getCost(network, data);
+                float delta = cost - currentCost;
+
+                if(delta > 0) {
+                    //Wrong direction
+                    value -= learningRate;
+                } else {
+                    //Correct direction
+                    value += learningRate;
+                }
 
                 neuronIn.connectionWeights.put(neuronOut, value);
+
+                currentCost = NetworkTrainer.getCost(network, data);
             }
         }
+
+        currentCost = NetworkTrainer.getCost(network, data);
 
         for (Neuron neuron : this.neurons) {
             neuron.bias += h;
-            neuron.costGradientB = (NetworkTrainer.getCost(network, data) - originalCost) / h;
+            float currentCost0 = NetworkTrainer.getCost(network, data);
+            float delta = (currentCost0 - currentCost);
+            if(delta != 0) {
+                //Change happened
+
+                if(delta > 0) {
+                    //Wrong direction
+                    neuron.bias -= learningRate;
+                } else {
+                    //Correct direction
+                    neuron.bias += learningRate;
+                }
+            }
             neuron.bias -= h;
+            currentCost = currentCost0;
         }
     }
 }

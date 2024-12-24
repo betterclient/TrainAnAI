@@ -36,29 +36,18 @@ public class NeuralNetwork {
         }
     }
 
-    public double learn(List<TrainingInput> data, double h, double learnRate) {
-        double originalCost = NetworkTrainer.getCost(this, data);
-
+    public double learn(List<TrainingInput> data, float h, float learnRate) {
         List<NeuralLayer> layers = new ArrayList<>(this.layers);
         layers.removeFirst();
         for (NeuralLayer neuralLayer : layers) {
-            neuralLayer.learn(this, data, h, originalCost);
+            float originalCost = NetworkTrainer.getCost(this, data);
+            neuralLayer.learn(this, data, h, originalCost, learnRate);
         }
 
-        //Check
-        this.applyGradients(learnRate);
         return NetworkTrainer.getCost(this, data);
     }
 
-    private void applyGradients(double learnRate) {
-        List<NeuralLayer> layers = new ArrayList<>(this.layers);
-        layers.removeFirst();
-        for (NeuralLayer neuralLayer : layers) {
-            neuralLayer.applyGradients(learnRate);
-        }
-    }
-
-    public double[] forward(double[] inputs) {
+    public float[] forward(float[] inputs) {
         for (int i = 1; i < layers.size(); i++) {
             inputs = layers.get(i).forward(inputs);
         }
