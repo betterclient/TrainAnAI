@@ -37,23 +37,7 @@ public class NeuralLayer {
     public void learn(NeuralNetwork network, List<TrainingInput> data, float h, float currentCost, float learningRate) {
         for (Neuron neuronIn : this.before.neurons) {
             for (Neuron neuronOut : this.neurons) {
-                float value = neuronIn.connectionWeights.get(neuronOut);
-                neuronIn.connectionWeights.put(neuronOut, value + h);
-
-                float cost = NetworkTrainer.getCost(network, data);
-                float delta = cost - currentCost;
-
-                if(delta > 0) {
-                    //Wrong direction
-                    value -= learningRate;
-                } else {
-                    //Correct direction
-                    value += learningRate;
-                }
-
-                neuronIn.connectionWeights.put(neuronOut, value);
-
-                currentCost = NetworkTrainer.getCost(network, data);
+                currentCost = neuronIn.learn(network, data, h, learningRate, neuronOut, currentCost);
             }
         }
 

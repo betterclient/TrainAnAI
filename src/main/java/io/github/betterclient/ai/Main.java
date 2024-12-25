@@ -1,5 +1,6 @@
 package io.github.betterclient.ai;
 
+import io.github.betterclient.ai.object.NeuralNetworkTrainer;
 import io.github.betterclient.ai.training.NetworkTrainer;
 import io.github.betterclient.ai.neural.NeuralNetwork;
 import io.github.betterclient.ai.training.TrainingInput;
@@ -17,23 +18,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        System.out.println("Running network with 120 parameters and 500 training cases");
-        NeuralNetwork network = new NeuralNetwork(new int[] {1, 40, 2});
-
-        //Train the network for results
-        NetworkTrainer.train
-                (
-                        network,
-                        createTrainingData(),
-                        //Do training 1000 times (bigger is more precise)
-                        1000,
-                        //Learn slope function amount thing I don't really know (smaller is better)
-                        0.01f,
-                        //Learning rate, configure the descent time thing
-                        0.01f
-                );
-
-        System.out.println("Cost of network: " + NetworkTrainer.getCost(network, createTrainingData()) + " (closer to 0 is better)");
+        NeuralNetworkTrainer trainer = new NeuralNetworkTrainer(
+                1, new int[] {40}, 2,
+                createTrainingData(),
+                100,
+                0.01f,
+                0.01f,
+                true
+        );
+        NeuralNetwork network = trainer.train();
+        System.out.println("Cost of network: " + trainer.getCost(network) + " (closer to 0 is better)");
+        trainer.printNetworkSize();
 
         System.out.println("Input \"50\": " + display(network.forward(new float[]{50})) + " expected -> [1.0, 0.0]");
         System.out.println("Input \"1\": " + display(network.forward(new float[]{1})) + " expected -> [1.0, 0.0]");

@@ -10,10 +10,12 @@ public class NetworkTrainer {
 
     /**
      * Train the given network using the given training data
-     * @param network the network to train (weights and biases)
-     * @param data Training Data
+     *
+     * @param network         the network to train (weights and biases)
+     * @param data            Training Data
+     * @param displayTraining
      */
-    public static void train(NeuralNetwork network, List<TrainingInput> data, int epochs, float h, float learnRate) {
+    public static void train(NeuralNetwork network, List<TrainingInput> data, int epochs, float h, float learnRate, boolean displayTraining) {
         long start = System.currentTimeMillis();
 
         float cost = getCost(network, data);
@@ -31,7 +33,7 @@ public class NetworkTrainer {
                     break;
                 }
 
-                System.out.println("Epoch: " + i1 + "/" + epochs + " complete. Current Cost is " + lastCost + " Delta: " + (cost - lastCost));
+                if (displayTraining) System.out.println("Epoch: " + i1 + "/" + epochs + " complete. Current Cost is " + lastCost + " Delta: " + (cost - lastCost));
 
                 if (i1 % 20 == 0) {
                     System.gc(); //Just to clear memory a little
