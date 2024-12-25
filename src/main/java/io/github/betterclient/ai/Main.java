@@ -1,7 +1,6 @@
 package io.github.betterclient.ai;
 
 import io.github.betterclient.ai.object.NeuralNetworkTrainer;
-import io.github.betterclient.ai.training.NetworkTrainer;
 import io.github.betterclient.ai.neural.NeuralNetwork;
 import io.github.betterclient.ai.training.TrainingInput;
 

@@ -13,7 +13,7 @@ public class NetworkTrainer {
      *
      * @param network         the network to train (weights and biases)
      * @param data            Training Data
-     * @param displayTraining
+     * @param displayTraining whether to display training data
      */
     public static void train(NeuralNetwork network, List<TrainingInput> data, int epochs, float h, float learnRate, boolean displayTraining) {
         long start = System.currentTimeMillis();
@@ -43,24 +43,6 @@ public class NetworkTrainer {
             }
 
             network.stopOptimizations();
-        }
-
-        printTime(start);
-        if(true) return;
-
-        for (int i = 0; i < epochs; i++) {
-            if(network.learn(data, h, learnRate) == 0) {
-                //That case where it somehow got to a perfect accuracy
-                printTime(start);
-                System.out.println("Training successful in " + i + " tries");
-                break;
-            }
-
-            System.out.println("Epoch: " + i + "/" + epochs + " complete. Current Cost is " + lastCost);
-
-            if (i % 20 == 0) {
-                System.gc(); //Just to clear memory a little
-            }
         }
 
         printTime(start);
