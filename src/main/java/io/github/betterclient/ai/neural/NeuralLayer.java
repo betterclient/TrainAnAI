@@ -34,6 +34,18 @@ public class NeuralLayer {
         return weightedInputs;
     }
 
+    public void applyGradients(float learnRate) {
+        for (Neuron neuron : neurons) {
+            neuron.bias -= neuron.biasCost * learnRate;
+            for (Neuron neuronIn : before.neurons) {
+                neuronIn.connectionWeights.put(
+                        neuron,
+                        neuronIn.connectionWeights.get(neuron) - (neuronIn.connectionWeightCosts.get(neuron) * learnRate)
+                );
+            }
+        }
+    }
+
     public void learn(NeuralNetwork network, List<TrainingInput> data, float h, float currentCost, float learningRate) {
         for (Neuron neuronIn : this.before.neurons) {
             for (Neuron neuronOut : this.neurons) {

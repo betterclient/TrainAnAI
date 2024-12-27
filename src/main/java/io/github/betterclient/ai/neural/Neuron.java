@@ -9,7 +9,9 @@ import java.util.Map;
 
 public class Neuron {
     public Map<Neuron, Float> connectionWeights = new HashMap<>();
+    public Map<Neuron, Float> connectionWeightCosts = new HashMap<>();
     public float bias;
+    public float biasCost;
 
     public Neuron(float bias) {
         this.bias = bias;
@@ -46,9 +48,10 @@ public class Neuron {
         int finalI = 1;
         for (int i = 1; i < 4; i++) {
             delta = getDelta(network, data, neuronOut, currentCost, h * i, value);
-            if (delta == 0) {
-                finalI = i;
+            if (delta <= 0) {
+                finalI = i - 1; //Return the last non negative delta
                 hasEffect = false;
+                break;
             }
         }
 

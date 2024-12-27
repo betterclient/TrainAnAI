@@ -20,32 +20,44 @@ public class NetworkTrainer {
 
         float cost = getCost(network, data);
 
+        for (int i = network.layers.size() - 1; i > 1; i--) {
+            NeuralLayer layer = network.layers.get(i);
+
+            cost = learn(network, data, epochs, h, learnRate, displayTraining, layer, cost, i);
+        }
+
         for (int i = 1; i < network.layers.size(); i++) {
             NeuralLayer layer = network.layers.get(i);
 
-            network.setupForwardingOptimization(layer.before, data); //setup optimizing the layer before
-
-            for (int i1 = 0; i1 < epochs; i1++) {
-                layer.learn(network, data, h, cost, learnRate);
-
-                if ((cost - lastCost) < h) {
-                    //Too less of a change to actually care about
-                    break;
-                }
-
-                if (displayTraining) System.out.println("Epoch: " + i1 + "/" + epochs + " complete. Current Cost is " + lastCost + " Delta: " + (cost - lastCost));
-
-                if (i1 % 20 == 0) {
-                    System.gc(); //Just to clear memory a little
-                }
-
-                cost = lastCost;
-            }
-
-            network.stopOptimizations();
+            cost = learn(network, data, epochs, h, learnRate, displayTraining, layer, cost, i);
         }
 
         printTime(start);
+    }
+
+    private static float learn(NeuralNetwork network, List<TrainingInput> data, int epochs, float h, float learnRate, boolean displayTraining, NeuralLayer layer, float cost, int i) {
+        network.setupForwardingOptimization(layer.before, data); //setup optimizing the layer before
+
+        for (int i1 = 0; i1 < epochs; i1++) {
+            layer.learn(network, data, h, cost, learnRate);
+
+            /*if ((cost - lastCost) < h) {
+                System.out.println("Exiting layer: " + i);
+                //Too less of a change to actually care about
+                break;
+            }*/
+
+            if (displayTraining) System.out.println("Epoch: " + i1 + "/" + epochs + " complete. Current Cost is " + lastCost + " Delta: " + (cost - lastCost));
+
+            if (i1 % 20 == 0) {
+                System.gc(); //Just to clear memory a little
+            }
+
+            cost = lastCost;
+        }
+
+        network.stopOptimizations();
+        return cost;
     }
 
     private static void printTime(long start) {

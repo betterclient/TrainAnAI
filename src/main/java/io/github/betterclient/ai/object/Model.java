@@ -1,7 +1,6 @@
-package io.github.betterclient.ai.model;
+package io.github.betterclient.ai.object;
 
 import io.github.betterclient.ai.neural.NeuralNetwork;
-import io.github.betterclient.ai.object.NeuralNetworkTrainer;
 import io.github.betterclient.ai.training.TrainingInput;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ public abstract class Model {
         this.layerSizes = layerSizes;
     }
 
-
     public abstract void updateData();
     public abstract String getInputForData(String data);
     public abstract List<TrainingInput> getTrainingSamples();
@@ -35,7 +33,7 @@ public abstract class Model {
         Arrays.stream(layerSizes).forEach(sizes::add);
         sizes.removeFirst(); sizes.removeLast();
 
-        network = new NeuralNetworkTrainer(
+        NeuralNetworkTrainer trainer = new NeuralNetworkTrainer(
                 layerSizes[0],
                 sizes.stream().mapToInt(x -> x).toArray(),
                 layerSizes[layerSizes.length - 1],
@@ -46,6 +44,8 @@ public abstract class Model {
                 this.h,
                 this.learningRate,
                 true //Change this
-        ).train();
+        );
+        trainer.printNetworkSize();
+        network = trainer.train();
     }
 }

@@ -1,6 +1,6 @@
 package io.github.betterclient.ai.model;
 
-import io.github.betterclient.ai.neural.NeuralNetwork;
+import io.github.betterclient.ai.object.Model;
 import io.github.betterclient.ai.training.TrainingInput;
 
 import java.text.DecimalFormat;

@@ -2,6 +2,7 @@ package io.github.betterclient.ai.object;
 
 import io.github.betterclient.ai.neural.NeuralNetwork;
 import io.github.betterclient.ai.training.NetworkTrainer;
+import io.github.betterclient.ai.training.SecondTrainer;
 import io.github.betterclient.ai.training.TrainingInput;
 
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
 
         NeuralNetwork network = new NeuralNetwork(integers.stream().mapToInt(x -> x).toArray());
 
-        NetworkTrainer.train(network, trainingSamples, epochs, h, learningRate, displayTraining);
+        //NetworkTrainer.train(network, trainingSamples, epochs, h, learningRate, displayTraining);
+        SecondTrainer.train(network, trainingSamples, 0.01f);
 
         return network;
     }

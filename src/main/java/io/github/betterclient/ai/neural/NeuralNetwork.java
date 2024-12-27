@@ -1,6 +1,5 @@
 package io.github.betterclient.ai.neural;
 
-import io.github.betterclient.ai.training.NetworkTrainer;
 import io.github.betterclient.ai.training.TrainingInput;
 
 import java.util.ArrayList;
@@ -38,17 +37,6 @@ public class NeuralNetwork {
         }
     }
 
-    public double learn(List<TrainingInput> data, float h, float learnRate) {
-        List<NeuralLayer> layers = new ArrayList<>(this.layers);
-        layers.removeFirst();
-        for (NeuralLayer neuralLayer : layers) {
-            float originalCost = NetworkTrainer.getCost(this, data);
-            neuralLayer.learn(this, data, h, originalCost, learnRate);
-        }
-
-        return NetworkTrainer.getCost(this, data);
-    }
-
     public float[] forward(float[] inputs) {
         for (int i = 1; i < layers.size(); i++) {
             NeuralLayer layer = layers.get(i);
@@ -67,6 +55,19 @@ public class NeuralNetwork {
             inputs = layer.forward(inputs);
         }
         return inputs;
+    }
+
+    public float cost(List<TrainingInput> samples) {
+        float cost = 0;
+        for (TrainingInput data : samples) {
+            float[] actualOutput = this.forward(data.inputs);
+
+            for (int i = 0; i < actualOutput.length; i++) {
+                float error = actualOutput[i] - data.expected[i];
+                cost += error * error;
+            }
+        }
+        return cost;
     }
 
     //Give the index of the precalculated call
@@ -109,5 +110,11 @@ public class NeuralNetwork {
 
     public void stopOptimizations() {
         preCalculatedNeuralLayers.clear();
+    }
+
+    public List<NeuralLayer> layersW() {
+        List<NeuralLayer> a = new ArrayList<>(layers);
+        a.removeFirst();
+        return a;
     }
 }
