@@ -2,7 +2,6 @@ package io.github.betterclient.ai.object;
 
 import io.github.betterclient.ai.neural.NeuralNetwork;
 import io.github.betterclient.ai.training.NetworkTrainer;
-import io.github.betterclient.ai.training.SecondTrainer;
 import io.github.betterclient.ai.training.TrainingInput;
 
 import java.util.ArrayList;
@@ -36,8 +35,10 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
 
         NeuralNetwork network = new NeuralNetwork(integers.stream().mapToInt(x -> x).toArray());
 
-        //NetworkTrainer.train(network, trainingSamples, epochs, h, learningRate, displayTraining);
-        SecondTrainer.train(network, trainingSamples, 0.01f);
+        for (int i = 0; i < epochs; i++) {
+            float f = NetworkTrainer.train(network, trainingSamples, learningRate);
+            System.out.println("Epoch: " + i + "/" + epochs + " complete. Delta: " + f);
+        }
 
         return network;
     }
@@ -59,6 +60,6 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
     }
 
     public float getCost(NeuralNetwork network) {
-        return NetworkTrainer.getCost(network, trainingSamples);
+        return network.cost(trainingSamples);
     }
 }

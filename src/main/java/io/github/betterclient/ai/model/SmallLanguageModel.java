@@ -19,7 +19,7 @@ public class SmallLanguageModel extends Model {
                 0.1f,
                 0.1f,
                 100, //you shouldn't be able to adjust this
-                new int[] {64, 64}
+                new int[] {64, 64, 64, 64}
         );
     }
 
@@ -41,10 +41,11 @@ public class SmallLanguageModel extends Model {
             Scanner scanner = new Scanner(f);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
+                String[] split = line.split(": ");
 
                 data.add(new TrainingInput(
-                        reverseDisplay(line.split(": ")[0]),
-                        reverseDisplay(line.split(": ")[1])
+                        reverseDisplay(split[0].substring(1, split[0].length() - 1)),
+                        reverseDisplay(split[1].substring(1, split[1].length() - 1))
                 ));
             }
             scanner.close();
