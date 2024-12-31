@@ -15,13 +15,12 @@ import java.util.List;
  * @param inputLength        the length of the input float[] array (medium)
  * @param hiddenLayerLengths the lengths of hidden layers (high & medium) (medium is better)
  * @param outputLength       the length of the output float[] array (medium)
- * @param trainingSamples    what we want the network to return for answers (extreme & high) (medium is better)
- * @param epochs             amount of times to refine/retrain the network (extreme+ & extreme) (higher is better)
- * @param h                  slope amount (medium & high) (lower is better)
+ * @param trainingSamples    what we want the network to return for answers (extreme+ & high) (medium is better)
+ * @param epochs             amount of times to refine/retrain the network (extreme & extreme) (higher is better)
  * @param learningRate       learning rate of neurons (low & medium) (lower is better)
  * @param displayTraining    whether the epoch count should be displayed
  */
-public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, int outputLength, List<TrainingInput> trainingSamples, int epochs, float h, float learningRate,
+public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, int outputLength, List<TrainingInput> trainingSamples, int epochs, float learningRate,
                                    boolean displayTraining) {
     /**
      * Train the network with the given information
@@ -35,9 +34,13 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
 
         NeuralNetwork network = new NeuralNetwork(integers.stream().mapToInt(x -> x).toArray());
 
+        //System.out.println("TRAINING: Calculate initial cost");
+        //float starting = network.cost(trainingSamples);
+
         for (int i = 0; i < epochs; i++) {
-            float f = NetworkTrainer.train(network, trainingSamples, learningRate);
-            System.out.println("Epoch: " + i + "/" + epochs + " complete. Delta: " + f);
+            float ending = NetworkTrainer.train(network, trainingSamples, learningRate);
+            //System.out.println("Epoch: " + (i + 1) + "/" + epochs + " complete. Delta: " + (starting - ending) + " cost is: " + ending);
+            //starting = ending; //Reuse given cost for every epoch
         }
 
         return network;
@@ -57,9 +60,5 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
         }
 
         System.out.println("Running network with " + totalParameters + " parameters and " + trainingSamples.size() + " training cases");
-    }
-
-    public float getCost(NeuralNetwork network) {
-        return network.cost(trainingSamples);
     }
 }

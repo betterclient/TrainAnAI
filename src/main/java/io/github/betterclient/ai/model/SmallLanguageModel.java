@@ -3,86 +3,64 @@ package io.github.betterclient.ai.model;
 import io.github.betterclient.ai.object.Model;
 import io.github.betterclient.ai.training.TrainingInput;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class SmallLanguageModel extends Model {
     public SmallLanguageModel() {
         super(
                 "SLM - Small language model",
                 "A really small language model that you shouldn't expect to make sense",
-                200,
-                0.1f,
-                0.1f,
+                1,
+                0.01f,
                 100, //you shouldn't be able to adjust this
-                new int[] {64, 64, 64, 64}
+                new int[] {3, 8, 5010}
         );
     }
 
     @Override
-    public void updateData() {}
+    public void updateData() {
+
+    }
 
     @Override
     public String getInputForData(String data) {
-        float[] modelOutput = network.forward(reverseDisplay(data));
-        return display(modelOutput);
+        float[] input = new float[3];
+        int index = 0;
+        for (int i = data.split(" ").length - 1; i >= 0; i--) {
+            if (index > 2)
+                break;
+
+            input[index] = SmallLanguageModelData.tokenize(data.split(" ")[i]);
+
+            index++;
+        }
+
+        String out;
+        StringBuilder outt = new StringBuilder();
+        while (!(out = SmallLanguageModelData.untokenize(this.network.forward(input))).equals("<end>")) {
+            input[0] = input[1];
+            input[1] = input[2];
+            input[2] = SmallLanguageModelData.tokenize(out);
+
+            outt.append(out).append(" ");
+        }
+        outt.append(out).append(" ");
+        return outt.toString();
     }
 
     @Override
     public List<TrainingInput> getTrainingSamples() {
         List<TrainingInput> data = new ArrayList<>();
 
-        File f = new File("slm.txt");
         try {
-            Scanner scanner = new Scanner(f);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] split = line.split(": ");
-
-                data.add(new TrainingInput(
-                        reverseDisplay(split[0].substring(1, split[0].length() - 1)),
-                        reverseDisplay(split[1].substring(1, split[1].length() - 1))
-                ));
-            }
-            scanner.close();
+            SmallLanguageModelData.parse(data);
+            this.layerSizes[this.layerSizes.length - 1] = SmallLanguageModelData.TOKENS.size();
+            System.out.println(SmallLanguageModelData.TOKENS.size());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         return data;
-    }
-
-    //----------------UTIL-------------
-
-    public static String display(float[] normalizedArray) {
-        StringBuilder builder = new StringBuilder();
-
-        for (float v : normalizedArray) {
-            if (v == 0) {
-                return builder.toString();
-            }
-
-            builder.append((char) (v * 128));
-        }
-
-        return builder.toString();
-    }
-
-    public static float[] reverseDisplay(String input) {
-        char[] charArray = input.toCharArray();
-        float[] reverseDisplayed = new float[64];
-
-        //Fill array with 0s
-        Arrays.fill(reverseDisplayed, 0);
-        int index = 0;
-        for (char c : charArray) {
-            reverseDisplayed[index] = c / 128f;
-            index++;
-        }
-        return reverseDisplayed;
     }
 }

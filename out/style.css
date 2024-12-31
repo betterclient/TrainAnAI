@@ -1,0 +1,43 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #111111;
+}
+
+.container {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px; /* Space between divs */
+}
+
+.div1, .div2, .div3 {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  color: white;
+  padding: 10px;
+  border: 2px solid black;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  background-color: #333333;
+}
+
+.div1 {
+  width: 300px;
+  height: 400px;
+  transform: rotate(-2deg);
+}
+
+.div2 {
+  width: 400px;
+  height: 500px;
+}
+
+.div3 {
+  width: 300px;
+  height: 400px;
+  transform: rotate(2deg);
+}

@@ -9,14 +9,13 @@ import java.util.List;
 
 public abstract class Model {
     public int epochs, trainingSampleSize;
-    public float h, learningRate;
+    public float learningRate;
     public final String name, description;
     public int[] layerSizes;
     public NeuralNetwork network;
 
-    public Model(String name, String description, int epochs, float h, float learningRate, int trainingSampleSize, int[] layerSizes) {
+    public Model(String name, String description, int epochs, float learningRate, int trainingSampleSize, int[] layerSizes) {
         this.epochs = epochs;
-        this.h = h;
         this.learningRate = learningRate;
         this.name = name;
         this.description = description;
@@ -41,7 +40,6 @@ public abstract class Model {
                 this.getTrainingSamples(),
 
                 this.epochs,
-                this.h,
                 this.learningRate,
                 true //Change this
         );

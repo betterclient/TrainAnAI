@@ -14,7 +14,6 @@ public class IsBiggerThan100Model extends Model {
                 "This is a model that tries to predict whether a given number is bigger than 100",
                 100,
                 0.01f,
-                0.01f,
                 200, //Minimum sample size is 200 for this model
                 new int[] {1, 20, 2}
         );
@@ -23,7 +22,6 @@ public class IsBiggerThan100Model extends Model {
     @Override
     public void updateData() {
         this.epochs = 100;
-        this.h = 0.01f;
         this.learningRate = 0.01f;
         this.trainingSampleSize = 200;
     }

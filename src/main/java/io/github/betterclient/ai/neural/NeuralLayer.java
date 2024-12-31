@@ -27,7 +27,7 @@ public class NeuralLayer {
             for (int i1 = 0; i1 < before.neurons.size(); i1++) {
                 weightedInput += inputs[i1] * before.neurons.get(i1).connectionWeights.get(neurons.get(i));
             }
-            weightedInputs[i] = Main.ACTIVATION_FUNCTION.apply(weightedInput);
+            weightedInputs[i] = Main.ACTIVATION_FUNCTION.func.apply(weightedInput);
         }
 
         return weightedInputs;
@@ -71,7 +71,7 @@ public class NeuralLayer {
 
         for (int i = 0; i < outNodes.length; i++) {
             float costDerivative = nodeCostDerivative(calculation.activations[i], expected[i]);
-            float activationDerivative = Main.ACTIVATION_DERIVATIVE_FUNCTION.apply(calculation.weightedInputs[i]);
+            float activationDerivative = Main.ACTIVATION_FUNCTION.derivative.apply(calculation.weightedInputs[i]);
             outNodes[i] = activationDerivative * costDerivative;
         }
 
@@ -101,7 +101,7 @@ public class NeuralLayer {
 
         //Activate
         for (int i = 0; i < calculation.activations.length; i++) {
-            calculation.activations[i] = Main.ACTIVATION_FUNCTION.apply(calculation.weightedInputs[i]);
+            calculation.activations[i] = Main.ACTIVATION_FUNCTION.func.apply(calculation.weightedInputs[i]);
         }
 
         return calculation.activations;
@@ -121,7 +121,7 @@ public class NeuralLayer {
 
                 newNodeValue += weightedInputDerivative * oldNodeValues[oldNodeIndex];
             }
-            newNodeValue *= Main.ACTIVATION_DERIVATIVE_FUNCTION.apply(calculation.weightedInputs[newNodeIndex]);
+            newNodeValue *= Main.ACTIVATION_FUNCTION.derivative.apply(calculation.weightedInputs[newNodeIndex]);
             newNodeValues[newNodeIndex] = newNodeValue;
         }
 
