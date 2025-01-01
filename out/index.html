@@ -3,16 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Groupadle OS</title>
-    <!--<script type="text/javascript" charset="utf-8" src="trainanai.js"></script>!-->
+    <title>Train An AI</title>
+    <script type="text/javascript" charset="utf-8" src="trainanai.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body><!--onload="main()"!-->
-<h1>Sigma boy</h1>
-<div class="container">
-    <div class="div1">Div 1</div>
-    <div class="div2">Div 2</div>
-    <div class="div3">Div 3</div>
+<body onload="main()">
+<span>Landscape mode recommended for mobile devices.</span>
+<h1 class="hello">Train an AI</h1>
+<div class="container" id="container">
+    <div class="div1" id="d1">
+        <h1>Training</h1>
+        <br>
+        <label>
+            Epochs
+            <input type="range" min="1" max="200" value="100" class="TRAINING_RESET" id="epochs">
+        </label>
+        <button id="info-epochs" class="infobutton">Info</button>
+        <br>
+        <br>
+        <label>
+            Learning Rate
+            <input type="range" min="1" max="1000" value="100" class="TRAINING_RESET" id="learningRate">
+        </label>
+        <button id="info-learningrate" class="infobutton">Info</button>
+        <br>
+        <br>
+        <label>
+            Hidden layers
+            <input type="range" min="1" max="5" value="1" class="TRAINING_RESET"  id="hiddenlayers">
+        </label>
+        <button id="info-hiddenlayers" class="infobutton">Info</button><br>
+        <br>
+        <label>
+            Training sample amount
+            <input type="range" min="50" max="200" value="100" class="TRAINING_RESET"  id="trainingsamples">
+        </label>
+        <button id="info-sample" class="infobutton">Info</button>
+    </div>
+    <div class="div2" id="d2">
+        <h1>Output</h1>
+
+        <br>
+        <span>Training status: <span style="color: red;" id="TRAINING_STATUS">Not trained</span></span>
+        <br>
+        <br>
+        Input
+        <br>
+        <div id="MODEL_SPECIFIC_INPUT">
+            <!-- this should be modified by java !-->
+        </div>
+        <br>
+        <br>
+        Output
+        <br>
+        <label for="MODEL_OUTPUT"></label><textarea disabled id="MODEL_OUTPUT" class="out">Output</textarea>
+
+        <button class="BUTTON_BIG BOTTOM" id="GUESS">Guess</button>
+    </div>
+    <div class="div3" id="d3">
+        <h1>Model</h1>
+        <br>
+        <br>
+        <label>
+            Choose a model
+            <select id="selectmodel" required class="TRAINING_RESET">
+                <option value="isbiggerthan100">IsBiggerThan100</option>
+            </select>
+        </label>
+        <br>
+        <br>
+        <h2>Model Specific Settings</h2>
+        <br>
+        <div id="MODEL_SPECIFIC">
+            <!-- this should be modified by java !-->
+        </div>
+        <button class="BUTTON_BIG BOTTOM" id="TRAIN">Train</button>
+    </div>
+</div>
+
+<div class="infobox" id="infobox">
+    Info goes here
 </div>
 </body>
 </html>

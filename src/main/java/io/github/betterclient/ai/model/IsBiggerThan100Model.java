@@ -2,6 +2,9 @@ package io.github.betterclient.ai.model;
 
 import io.github.betterclient.ai.object.Model;
 import io.github.betterclient.ai.training.TrainingInput;
+import org.teavm.jso.dom.html.HTMLDocument;
+import org.teavm.jso.dom.html.HTMLElement;
+import org.teavm.jso.dom.html.HTMLInputElement;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -14,16 +17,46 @@ public class IsBiggerThan100Model extends Model {
                 "This is a model that tries to predict whether a given number is bigger than 100",
                 100,
                 0.01f,
-                200, //Minimum sample size is 200 for this model
-                new int[] {1, 20, 2}
+                50,
+                new int[] {1, 2, 2}
         );
+    }
+
+    public static void appendSettings(HTMLElement element) {
+        element.setInnerHTML("This model doesn't have specific settings.");
+    }
+
+    public static void appendInput(HTMLElement element) {
+        HTMLDocument document = HTMLDocument.current();
+        HTMLInputElement input = (HTMLInputElement) document.createElement("input");
+        input.setId("MODEL_INPUT_IBT100");
+        input.setInnerHTML("15");
+        input.setClassName("out");
+        input.setType("number");
+        input.getStyle().setProperty("height", "50px");
+
+        element.appendChild(input);
     }
 
     @Override
     public void updateData() {
-        this.epochs = 100;
-        this.learningRate = 0.01f;
-        this.trainingSampleSize = 200;
+        int hiddenLayers = getSlider("hiddenlayers");
+
+        this.epochs = getSlider("epochs");
+        this.learningRate = getSlider("learningRate") / 10000f;
+        this.trainingSampleSize = getSlider("trainingsamples");
+
+        this.layerSizes = new int[hiddenLayers + 2];
+        for (int i = 0; i < this.layerSizes.length; i++) {
+            if (i == 0) this.layerSizes[i] = 1;
+            else if (i == this.layerSizes.length - 1) this.layerSizes[i] = 2;
+            else this.layerSizes[i] = 2;
+        }
+    }
+
+    private int getSlider(String sliderID) {
+        HTMLInputElement inputElement = (HTMLInputElement) HTMLDocument.current().getElementById(sliderID);
+        return Integer.parseInt(inputElement.getValue());
     }
 
     @Override
@@ -35,6 +68,11 @@ public class IsBiggerThan100Model extends Model {
         return "Model guess was " + display(out) + ", it was " + ((Float.parseFloat(data) > 100 == modelGuess) ? "correct" : "not correct");
     }
 
+    @Override
+    public String getOutput() {
+        return getInputForData(((HTMLInputElement)HTMLDocument.current().getElementById("MODEL_INPUT_IBT100")).getValue());
+    }
+
     private static String display(float[] forward) {
         DecimalFormat format = new DecimalFormat("0.00");
         return "[" + format.format(forward[0]) + ", " + format.format(forward[1]) + "]";
@@ -44,7 +82,7 @@ public class IsBiggerThan100Model extends Model {
     public List<TrainingInput> getTrainingSamples() {
         List<TrainingInput> data = new ArrayList<>();
 
-        for (int i = -((trainingSampleSize / 2) + 100); i < ((trainingSampleSize / 2) + 100); i++) {
+        for (int i = 100 - trainingSampleSize; i < 100 + trainingSampleSize; i++) {
             data.add(new TrainingInput(
                     new float[] {i},
                     new float[] {i <= 100 ? 1 : 0, i > 100 ? 1 : 0}

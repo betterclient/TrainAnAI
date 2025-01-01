@@ -1,10 +1,38 @@
 body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: #111111;
+  background-image: linear-gradient(2deg, blue, #37aed0);
+  position: relative;
+}
+
+/*God forgive me for this code*/
+.infobox {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  border-radius: 5px;
+  border: 2px solid black;
+  color: white;
+  background-color: #222222;
+  width: 250px;
+  height: 200px;
+}
+
+.infobutton {
+    border-radius: 5px;
+    background-color: #111111;
+    color: white;
+}
+
+.hello {
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+  font-size: 100px;
 }
 
 .container {
@@ -22,22 +50,49 @@ body {
   width: auto;
   height: auto;
   border-radius: 10px;
-  background-color: #333333;
+  background-color: #3333ff;
+}
+
+.BOTTOM {
+    position: absolute;
+    bottom: 10px;
+    border-radius: 10px;
+}
+
+.BUTTON_BIG {
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 95%;
+    height: 50px;
+
+    background-color: #4444ff;
+}
+
+.out {
+    border-radius: 10px;
+    width: 90%;
+    height: 10%;
+
+    background-color: #111111;
+    color: white;
 }
 
 .div1 {
-  width: 300px;
-  height: 400px;
-  transform: rotate(-2deg);
+  width: 400px;
+  height: 500px;
+  transform: rotate(-3deg);
 }
 
 .div2 {
-  width: 400px;
-  height: 500px;
+  width: 500px;
+  height: 600px;
+  position: relative;
 }
 
 .div3 {
-  width: 300px;
-  height: 400px;
-  transform: rotate(2deg);
+  width: 400px;
+  height: 500px;
+  transform: rotate(3deg);
+  position: relative;
 }

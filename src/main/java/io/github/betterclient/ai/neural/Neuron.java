@@ -15,7 +15,7 @@ public class Neuron {
 
     public void initConnections(NeuralLayer layer) {
         for (Neuron neuron : layer.neurons) {
-            connectionWeights.put(neuron, 0F);
+            connectionWeights.put(neuron, (float) (Math.random() - 0.5));
         }
     }
 }

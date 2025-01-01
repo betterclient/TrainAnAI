@@ -25,6 +25,7 @@ public abstract class Model {
 
     public abstract void updateData();
     public abstract String getInputForData(String data);
+    public abstract String getOutput();
     public abstract List<TrainingInput> getTrainingSamples();
 
     public final void train() {

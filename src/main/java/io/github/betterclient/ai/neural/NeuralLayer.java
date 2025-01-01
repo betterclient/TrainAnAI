@@ -14,7 +14,7 @@ public class NeuralLayer {
 
     public NeuralLayer(int layerCount) {
         for (int i = 0; i < layerCount; i++) {
-            neurons.add(new Neuron(0f));
+            neurons.add(new Neuron((float) (Math.random() - 0.5f)));
         }
     }
 
@@ -44,7 +44,6 @@ public class NeuralLayer {
             }
         }
     }
-
 
     public void updateGradients(PreCalculation calculation, float[] nodeValues) {
         for (int nodeOut = 0; nodeOut < neurons.size(); nodeOut++) {

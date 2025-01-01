@@ -10,8 +10,10 @@ import java.util.Map;
 
 public class NeuralNetwork {
     public List<NeuralLayer> layers = new ArrayList<>();
+    public final int[] layerCounts;
 
     public NeuralNetwork(int[] layerCounts) {
+        this.layerCounts = layerCounts;
         for (int layerCount : layerCounts) {
             layers.add(new NeuralLayer(layerCount));
         }
@@ -78,12 +80,12 @@ public class NeuralNetwork {
 
         for (int i = layers.size() - 2; i >= 1; i--) {
             NeuralLayer hiddenLayer = layers.get(i);
-            calculation = preCalculations.get(hiddenLayer);
+            NeuralLayer nextLayer = hiddenLayer.after;
+            calculation = preCalculations.get(nextLayer);
 
-            values = hiddenLayer.calculateHiddenLayerNodeValues(calculation, outputLayer, values);
+            values = hiddenLayer.calculateHiddenLayerNodeValues(calculation, nextLayer, values);
             hiddenLayer.updateGradients(calculation, values);
         }
-
         preCalculations.clear();
     }
 
@@ -96,5 +98,16 @@ public class NeuralNetwork {
             inputs = layer.preCalculate(inputs, calculation);
             preCalculations.put(layer, calculation);
         }
+    }
+
+    public int getParameterSize() {
+        int totalParameters = 0;
+        for (int i = 0; i < layerCounts.length - 1; i++) {
+            int currentLayerSize = layerCounts[i];
+            int nextLayerSize = layerCounts[i + 1];
+            totalParameters += currentLayerSize * nextLayerSize;
+            totalParameters += nextLayerSize;
+        }
+        return totalParameters;
     }
 }

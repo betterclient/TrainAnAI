@@ -70,7 +70,7 @@ public enum ActivationFunction {
     }
 
     private static float sigmoidDerivative(float x) {
-        float sigmoid = sigmoid(x);
+        float sigmoid = ActivationFunction.SIGMOID.func.apply(x); //Allow caching on derivative too
         return sigmoid * (1 - sigmoid);
     }
 }
