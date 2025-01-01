@@ -33,27 +33,22 @@ public class TrainingStatus {
         HTMLDocument document = HTMLDocument.current();
 
         HTMLElement trainingStatus = document.getElementById("TRAINING_STATUS");
-        trainingStatus.setInnerText("Training");
+        trainingStatus.setInnerText("Training (website may lag)");
         trainingStatus.getStyle().setProperty("color", "yellow");
 
         //Train the model 2 frames later, to let the training text display
         Window.requestAnimationFrame(timestamp -> Window.requestAnimationFrame(timestamp1 -> {
             TRAINED_MODEL = Main.trainModel();
-
-            if (TRAINED_MODEL != null) {
-                trainingStatus.setInnerText("Trained");
-                trainingStatus.getStyle().setProperty("color", "green");
-            } else {
-                untrain();
-            }
         }));
     }
 
-    private static void untrain() {
+    public static void untrain() {
         HTMLDocument document = HTMLDocument.current();
 
         HTMLElement trainingStatus = document.getElementById("TRAINING_STATUS");
         trainingStatus.setInnerText("Not trained");
         trainingStatus.getStyle().setProperty("color", "red");
+
+        TRAINED_MODEL = null;
     }
 }

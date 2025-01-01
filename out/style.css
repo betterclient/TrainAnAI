@@ -9,6 +9,12 @@ body {
   position: relative;
 }
 
+canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    border: 1px solid black;
+}
+
 /*God forgive me for this code*/
 .infobox {
   position: absolute;

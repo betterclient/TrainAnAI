@@ -8,7 +8,7 @@ import java.util.List;
 public class NetworkTrainer {
     public static float train(NeuralNetwork network, List<TrainingInput> samples, float learnRate) {
         //Slower, more accurate training for smaller models.
-        if (samples.size() < 1000 && network.getParameterSize() < 1000) {
+        if (samples.size() < 1000 || network.getParameterSize() < 1000) {
             SmallNetworkTrainer.train(network, samples, learnRate, learnRate);
             return 1;
         }

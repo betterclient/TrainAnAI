@@ -3,6 +3,10 @@ package io.github.betterclient.ai.object;
 import io.github.betterclient.ai.neural.NeuralNetwork;
 import io.github.betterclient.ai.training.NetworkTrainer;
 import io.github.betterclient.ai.training.TrainingInput;
+import io.github.betterclient.ai.web.TrainingStatus;
+import org.teavm.jso.browser.Window;
+import org.teavm.jso.dom.html.HTMLDocument;
+import org.teavm.jso.dom.html.HTMLElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,17 +38,32 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
 
         NeuralNetwork network = new NeuralNetwork(integers.stream().mapToInt(x -> x).toArray());
 
-        //System.out.println("TRAINING: Calculate initial cost");
-        //float starting = network.cost(trainingSamples);
-
-        for (int i = 0; i < epochs; i++) {
-            float ending = NetworkTrainer.train(network, trainingSamples, learningRate);
-            //System.out.println("Epoch: " + (i + 1) + "/" + epochs + " complete. Delta: " + (starting - ending) + " cost is: " + ending);
-            //starting = ending; //Reuse given cost for every epoch
-        }
+        remainingEpochs = epochs;
+        train(network);
 
         return network;
     }
+
+    private void train(NeuralNetwork network) {
+        float ending = NetworkTrainer.train(network, trainingSamples, learningRate);
+        String s = (epochs - remainingEpochs) + "/" + epochs;
+
+        HTMLDocument document = HTMLDocument.current();
+        HTMLElement trainingStatus = document.getElementById("TRAINING_STATUS");
+        trainingStatus.setInnerText("Training (website may lag): " + s);
+
+        if (remainingEpochs-- != 0) Window.requestAnimationFrame(timestamp -> train(network));
+        else {
+            if (TrainingStatus.TRAINED_MODEL != null) {
+                trainingStatus.setInnerText("Trained");
+                trainingStatus.getStyle().setProperty("color", "green");
+            } else {
+                TrainingStatus.untrain();
+            }
+        }
+    }
+
+    private static int remainingEpochs;
 
     public void printNetworkSize() {
         List<Integer> integers = new ArrayList<>();

@@ -2,6 +2,8 @@ package io.github.betterclient.ai.object;
 
 import io.github.betterclient.ai.neural.NeuralNetwork;
 import io.github.betterclient.ai.training.TrainingInput;
+import org.teavm.jso.dom.html.HTMLDocument;
+import org.teavm.jso.dom.html.HTMLInputElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,5 +48,10 @@ public abstract class Model {
         );
         trainer.printNetworkSize();
         network = trainer.train();
+    }
+
+    protected final int getSlider(String sliderID) {
+        HTMLInputElement inputElement = (HTMLInputElement) HTMLDocument.current().getElementById(sliderID);
+        return Integer.parseInt(inputElement.getValue());
     }
 }

@@ -37,9 +37,9 @@ public class BackgroundAnimation {
         );
 
         if (degree > 360) degree = 0;
-        if (degree1 > 360) degree1 = 0;
-        if (degree2 > 360) degree2 = 0;
-        if (degree3 > 360) degree3 = 0;
+        if (degree1 < -360) degree1 = 0;
+        if (degree2 < -360) degree2 = 0;
+        if (degree3 < -360) degree3 = 0;
 
         Window.requestAnimationFrame(BackgroundAnimation::animate);
     }

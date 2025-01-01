@@ -54,11 +54,6 @@ public class IsBiggerThan100Model extends Model {
         }
     }
 
-    private int getSlider(String sliderID) {
-        HTMLInputElement inputElement = (HTMLInputElement) HTMLDocument.current().getElementById(sliderID);
-        return Integer.parseInt(inputElement.getValue());
-    }
-
     @Override
     public String getInputForData(String data) {
         float[] out = this.network.forward(new float[] {Float.parseFloat(data)});

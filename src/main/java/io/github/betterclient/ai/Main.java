@@ -21,7 +21,7 @@ public class Main {
         if (model == null) return null;
 
         model.updateData();
-        model.train();
+        new Thread(model::train).start();
 
         return model;
     }
