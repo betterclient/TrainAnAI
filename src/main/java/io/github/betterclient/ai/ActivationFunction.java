@@ -73,4 +73,9 @@ public enum ActivationFunction {
         float sigmoid = ActivationFunction.SIGMOID.func.apply(x); //Allow caching on derivative too
         return sigmoid * (1 - sigmoid);
     }
+
+    public void reset() {
+        normalCache.clear();
+        derivativeCache.clear();
+    }
 }

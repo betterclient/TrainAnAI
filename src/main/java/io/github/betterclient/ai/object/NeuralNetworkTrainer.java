@@ -46,13 +46,16 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
 
     private void train(NeuralNetwork network) {
         float ending = NetworkTrainer.train(network, trainingSamples, learningRate);
+        if (displayTraining) {
+            System.out.println("Epoch: " + (epochs - remainingEpochs) + " complete!");
+        }
         String s = (epochs - remainingEpochs) + "/" + epochs;
 
         HTMLDocument document = HTMLDocument.current();
         HTMLElement trainingStatus = document.getElementById("TRAINING_STATUS");
         trainingStatus.setInnerText("Training (website may lag): " + s);
 
-        if (remainingEpochs-- != 0) Window.requestAnimationFrame(timestamp -> train(network));
+        if (remainingEpochs-- > 0) Window.requestAnimationFrame(timestamp -> train(network));
         else {
             if (TrainingStatus.TRAINED_MODEL != null) {
                 trainingStatus.setInnerText("Trained");
@@ -63,7 +66,7 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
         }
     }
 
-    private static int remainingEpochs;
+    public static int remainingEpochs;
 
     public void printNetworkSize() {
         List<Integer> integers = new ArrayList<>();

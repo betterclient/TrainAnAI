@@ -68,38 +68,6 @@ public class NeuralNetwork {
         return a;
     }
 
-    public void updateAllGradients(TrainingInput sample) {
-        calculateOutputs(sample.inputs);
-
-        NeuralLayer outputLayer = this.layers.getLast();
-        PreCalculation calculation = preCalculations.get(outputLayer);
-
-        //Backpropagation
-        float[] values = outputLayer.calculate(calculation, sample.expected);
-        outputLayer.updateGradients(calculation, values);
-
-        for (int i = layers.size() - 2; i >= 1; i--) {
-            NeuralLayer hiddenLayer = layers.get(i);
-            NeuralLayer nextLayer = hiddenLayer.after;
-            calculation = preCalculations.get(nextLayer);
-
-            values = hiddenLayer.calculateHiddenLayerNodeValues(calculation, nextLayer, values);
-            hiddenLayer.updateGradients(calculation, values);
-        }
-        preCalculations.clear();
-    }
-
-    private final Map<NeuralLayer, PreCalculation> preCalculations = new HashMap<>();
-    private void calculateOutputs(float[] inputs) {
-        for (int i = 1; i < layers.size(); i++) {
-            NeuralLayer layer = layers.get(i);
-
-            PreCalculation calculation = new PreCalculation(layer);
-            inputs = layer.preCalculate(inputs, calculation);
-            preCalculations.put(layer, calculation);
-        }
-    }
-
     public int getParameterSize() {
         int totalParameters = 0;
         for (int i = 0; i < layerCounts.length - 1; i++) {

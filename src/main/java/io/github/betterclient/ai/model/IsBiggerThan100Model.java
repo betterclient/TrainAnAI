@@ -70,7 +70,9 @@ public class IsBiggerThan100Model extends Model {
 
     private static String display(float[] forward) {
         DecimalFormat format = new DecimalFormat("0.00");
-        return "[" + format.format(forward[0]) + ", " + format.format(forward[1]) + "]";
+        String f0 = format.format(forward[0]);
+        String f1 = format.format(forward[1]);
+        return "[" + (f0.equals("NaN") ? forward[0] : f0) + ", " + (f1.equals("NaN") ? forward[1] : f1) + "]";
     }
 
     @Override

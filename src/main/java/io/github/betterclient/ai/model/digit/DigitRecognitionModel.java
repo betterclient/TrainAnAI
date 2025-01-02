@@ -47,7 +47,7 @@ public class DigitRecognitionModel extends Model {
         context2D.fillRect(0, 0, 16, 16);
 
         AtomicBoolean isPainting = new AtomicBoolean(false);
-        canvas.onMouseUp(evt -> isPainting.set(false));
+        element.getOwnerDocument().addEventListener("mouseup", evt -> isPainting.set(false));
         canvas.onMouseDown(evt -> isPainting.set(true));
         canvas.onMouseMove(evt -> {
             if (!isPainting.get()) return;

@@ -1,5 +1,7 @@
 package io.github.betterclient.ai.web;
 
+import io.github.betterclient.ai.ActivationFunction;
+import io.github.betterclient.ai.Main;
 import io.github.betterclient.ai.model.digit.DigitRecognitionModel;
 import io.github.betterclient.ai.model.IsBiggerThan100Model;
 import io.github.betterclient.ai.object.Model;
@@ -13,6 +15,23 @@ public class ModelSelectionListener {
         onChange(); //Initial.
 
         selectElement.addEventListener("change", evt -> onChange());
+
+        HTMLSelectElement selectactivation = (HTMLSelectElement) HTMLDocument.current().getElementById("selectactivation");
+        onChangeActivate(); //Initial.
+
+        selectactivation.addEventListener("change", evt -> onChangeActivate());
+    }
+
+    private static void onChangeActivate() {
+        HTMLSelectElement selectactivation = (HTMLSelectElement) HTMLDocument.current().getElementById("selectactivation");
+        String activationValue  = selectactivation.getValue();
+
+        Main.ACTIVATION_FUNCTION = switch (activationValue) {
+            case "sigmoid" -> ActivationFunction.SIGMOID;
+            case "gelu" -> ActivationFunction.GELU;
+            default -> throw new RuntimeException("no");
+        };
+        Main.ACTIVATION_FUNCTION.reset();
     }
 
     public static Model createModel() {
