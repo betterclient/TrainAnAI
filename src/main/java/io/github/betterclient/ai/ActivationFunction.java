@@ -18,59 +18,48 @@ public enum ActivationFunction {
             x -> cacheOrCreate(x, ActivationFunction::gelu, false),
 
             x -> cacheOrCreate(x, ActivationFunction::geluDerivative, true)
-    ),
+    );
 
-    //Relu is too fast to cache
-    RELU(ActivationFunction::relu, ActivationFunction::reluDerivative);
-
-    public final Function<Float, Float> func, derivative;
-    ActivationFunction(Function<Float, Float> func, Function<Float, Float> derivative) {
+    public final Function<Double, Double> func, derivative;
+    ActivationFunction(Function<Double, Double> func, Function<Double, Double> derivative) {
         this.func = func;
         this.derivative = derivative;
     }
 
-    static final Map<Float, Float> normalCache = new HashMap<>();
-    static final Map<Float, Float> derivativeCache = new HashMap<>();
+    static final Map<Double, Double> normalCache = new HashMap<>();
+    static final Map<Double, Double> derivativeCache = new HashMap<>();
 
-    public static float cacheOrCreate(float x, Function<Float, Float> func, boolean isDerivative) {
+    public static double cacheOrCreate(double x, Function<Double, Double> func, boolean isDerivative) {
         return (isDerivative ? derivativeCache : normalCache).computeIfAbsent(x, func);
     }
 
-    public static float relu(float x) {
-        return Math.max(0, x);
-    }
+    public static double geluDerivative(double x) {
+        double sqrt2OverPi = (float) Math.sqrt(2f / Math.PI);
+        double coefficient = 0.044715F;
 
-    public static float reluDerivative(float x) {
-        return x > 0 ? 1 : 0;
-    }
+        double term = -x + coefficient * Math.pow(x, 3);
+        double tanhZ = -Math.tanh(sqrt2OverPi * term);
+        double sech2Z = 1 - tanhZ * tanhZ; // sech^2(z) = 1 - tanh^2(z)
 
-    public static float geluDerivative(float x) {
-        float sqrt2OverPi = (float) Math.sqrt(2f / Math.PI);
-        float coefficient = 0.044715F;
-
-        float term = (float) (x + coefficient * Math.pow(x, 3));
-        float tanhZ = (float) Math.tanh(sqrt2OverPi * term);
-        float sech2Z = 1 - tanhZ * tanhZ; // sech^2(z) = 1 - tanh^2(z)
-
-        float zDerivative = (float) (sqrt2OverPi * (1f + 3f * coefficient * Math.pow(x, 2f)));
+        double zDerivative = (float) (sqrt2OverPi * (1f + 3f * coefficient * Math.pow(x, 2f)));
 
         return 0.5f * (1 + tanhZ) + 0.5f * x * sech2Z * zDerivative;
     }
 
-    public static float gelu(float x) {
-        float sqrt2OverPi = (float) Math.sqrt(2 / Math.PI);
-        float coefficient = 0.044715f;
+    public static double gelu(double x) {
+        double sqrt2OverPi = Math.sqrt(2 / Math.PI);
+        double coefficient = 0.044715f;
 
-        float term = (float) (x + coefficient * Math.pow(x, 3f));
-        return (float) (0.5f * x * (1f + Math.tanh(sqrt2OverPi * term)));
+        double term = (x + coefficient * Math.pow(x, 3f));
+        return (0.5f * x * (1f + Math.tanh(sqrt2OverPi * term)));
     }
 
-    private static float sigmoid(float x) {
-        return (float) (1 / (1 + Math.exp(-x)));
+    private static double sigmoid(double x) {
+        return (1 / (1 + Math.exp(-x)));
     }
 
-    private static float sigmoidDerivative(float x) {
-        float sigmoid = ActivationFunction.SIGMOID.func.apply(x); //Allow caching on derivative too
+    private static double sigmoidDerivative(double x) {
+        double sigmoid = ActivationFunction.SIGMOID.func.apply(x); //Allow caching on derivative too
         return sigmoid * (1 - sigmoid);
     }
 

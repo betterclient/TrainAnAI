@@ -43,21 +43,16 @@ public class MNISTParser {
         List<TrainingInput> trainingInputs = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            float[] output = new float[10];
+            double[] output = new double[10];
             Arrays.fill(output, 0);
             output[i] = 1;
 
             int index = 0;
             for (Map<Position, Boolean> map : PARSED.get(i)) {
                 index++;
-                if (index % 2 == 0) continue;
-                if (index > (size / 2)) break;
+                if (index > (size / 10)) break;
 
-                float[] input = new float[256];
-                List<Float> list = map.values().stream().map(aBoolean -> aBoolean ? 1f : 0f).toList();
-                for (int i1 = 0; i1 < list.size(); i1++) {
-                    input[i1] = list.get(i1);
-                }
+                double[] input = map.values().stream().map(aBoolean -> aBoolean ? 1d : 0d).mapToDouble(Double::doubleValue).toArray();
 
                 trainingInputs.add(new TrainingInput(input, output));
             }

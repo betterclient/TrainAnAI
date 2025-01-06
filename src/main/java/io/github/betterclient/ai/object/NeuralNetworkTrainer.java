@@ -24,7 +24,7 @@ import java.util.List;
  * @param learningRate       learning rate of neurons (low & medium) (lower is better)
  * @param displayTraining    whether the epoch count should be displayed
  */
-public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, int outputLength, List<TrainingInput> trainingSamples, int epochs, float learningRate,
+public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, int outputLength, List<TrainingInput> trainingSamples, int epochs, double learningRate,
                                    boolean displayTraining) {
     /**
      * Train the network with the given information
@@ -45,7 +45,7 @@ public record NeuralNetworkTrainer(int inputLength, int[] hiddenLayerLengths, in
     }
 
     private void train(NeuralNetwork network) {
-        float ending = NetworkTrainer.train(network, trainingSamples, learningRate);
+        double ending = NetworkTrainer.train(network, trainingSamples, learningRate);
         if (displayTraining) {
             System.out.println("Epoch: " + (epochs - remainingEpochs) + " complete!");
         }

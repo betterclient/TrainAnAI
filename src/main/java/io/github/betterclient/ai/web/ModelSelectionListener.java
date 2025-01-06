@@ -2,6 +2,7 @@ package io.github.betterclient.ai.web;
 
 import io.github.betterclient.ai.ActivationFunction;
 import io.github.betterclient.ai.Main;
+import io.github.betterclient.ai.model.AlgorithmPredict;
 import io.github.betterclient.ai.model.digit.DigitRecognitionModel;
 import io.github.betterclient.ai.model.IsBiggerThan100Model;
 import io.github.betterclient.ai.object.Model;
@@ -41,6 +42,7 @@ public class ModelSelectionListener {
         return switch (modelValue) {
             case "isbiggerthan100" -> new IsBiggerThan100Model();
             case "digitrecog" -> new DigitRecognitionModel();
+            case "alghor" -> new AlgorithmPredict();
             default -> null;
         };
     }
@@ -63,6 +65,10 @@ public class ModelSelectionListener {
             case "digitrecog":
                 DigitRecognitionModel.appendSettings(element);
                 DigitRecognitionModel.appendInput(element0);
+                break;
+            case "alghor":
+                AlgorithmPredict.appendSettings(element);
+                AlgorithmPredict.appendInput(element0);
                 break;
             default:
                 break;

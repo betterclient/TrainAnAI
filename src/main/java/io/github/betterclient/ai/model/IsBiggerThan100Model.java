@@ -56,7 +56,7 @@ public class IsBiggerThan100Model extends Model {
 
     @Override
     public String getInputForData(String data) {
-        float[] out = this.network.forward(new float[] {Float.parseFloat(data)});
+        double[] out = this.network.forward(new double[] {Float.parseFloat(data)});
 
         boolean modelGuess = out[1] > out[0];
 
@@ -68,7 +68,7 @@ public class IsBiggerThan100Model extends Model {
         return getInputForData(((HTMLInputElement)HTMLDocument.current().getElementById("MODEL_INPUT_IBT100")).getValue());
     }
 
-    private static String display(float[] forward) {
+    private static String display(double[] forward) {
         DecimalFormat format = new DecimalFormat("0.00");
         String f0 = format.format(forward[0]);
         String f1 = format.format(forward[1]);
@@ -81,8 +81,8 @@ public class IsBiggerThan100Model extends Model {
 
         for (int i = 100 - trainingSampleSize; i < 100 + trainingSampleSize; i++) {
             data.add(new TrainingInput(
-                    new float[] {i},
-                    new float[] {i <= 100 ? 1 : 0, i > 100 ? 1 : 0}
+                    new double[] {i},
+                    new double[] {i <= 100 ? 1 : 0, i > 100 ? 1 : 0}
             ));
         }
 

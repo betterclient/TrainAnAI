@@ -21,7 +21,12 @@ public class Main {
         if (model == null) return null;
 
         model.updateData();
-        new Thread(model::train).start();
+        try {
+            model.train();
+        } catch (Exception e) {
+            TrainingStatus.untrain();
+            throw new RuntimeException(e);
+        }
 
         return model;
     }

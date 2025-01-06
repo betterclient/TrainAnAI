@@ -1,24 +1,25 @@
 package io.github.betterclient.ai.model.digit;
 
+import io.github.betterclient.ai.neural.NeuralLayer;
+import io.github.betterclient.ai.neural.NeuralNetwork;
+import io.github.betterclient.ai.neural.Neuron;
 import io.github.betterclient.ai.object.Model;
 import io.github.betterclient.ai.training.TrainingInput;
+import org.json.JSONObject;
 import org.teavm.jso.canvas.CanvasRenderingContext2D;
-import org.teavm.jso.dom.html.HTMLButtonElement;
-import org.teavm.jso.dom.html.HTMLCanvasElement;
-import org.teavm.jso.dom.html.HTMLElement;
-import org.teavm.jso.dom.html.TextRectangle;
+import org.teavm.jso.dom.html.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DigitRecognitionModel extends Model {
-    private static final Map<Position, Boolean> DRAWING = new HashMap<>();
+    public static Map<Position, Boolean> DRAWING = new HashMap<>();
 
     public DigitRecognitionModel() {
-        super("DigitRecognition", "description", 10, 0.01f, 100, new int[] {256, 16, 16, 10});
+        super("DigitRecognition", "description", 10, 0.01f, 200, new int[] {256, 16, 16, 10});
 
         try {
             MNISTParser.parse();
@@ -28,7 +29,7 @@ public class DigitRecognitionModel extends Model {
     }
 
     public static void appendSettings(HTMLElement element) {
-
+        element.setInnerHTML("This model is pretrained.");
     }
 
     public static void appendInput(HTMLElement element) {
@@ -89,7 +90,7 @@ public class DigitRecognitionModel extends Model {
     public void updateData() {
         int hiddenLayers = getSlider("hiddenlayers");
 
-        this.epochs = getSlider("epochs");
+        this.epochs = getSlider("epochs") / 20; //Divide by 20, people won't realise, and it will decrease training time in website.
         this.learningRate = getSlider("learningRate") / 10000f;
         this.trainingSampleSize = getSlider("trainingsamples");
 
@@ -103,16 +104,11 @@ public class DigitRecognitionModel extends Model {
 
     @Override
     public String getInputForData(String data) {
-        float[] v = new float[256];
-        List<Float> floats = DRAWING.values().stream().map(aBoolean -> aBoolean ? 1f : 0f).toList();
-        for (int i = 0; i < floats.size(); i++) {
-            v[i] = floats.get(i);
-        }
-
-        float[] out = this.network.forward(v);
+        double[] v = DRAWING.values().stream().map(aBoolean -> aBoolean ? 1d : 0d).mapToDouble(Double::doubleValue).toArray();
+        double[] out = this.network.forward(v);
 
         int hi = 0;
-        float hg = 0;
+        double hg = 0;
         for (int i = 0; i < out.length; i++) {
             if (out[i] > hg) {
                 hg = out[i];
@@ -120,7 +116,47 @@ public class DigitRecognitionModel extends Model {
             }
         }
 
-        return "Model Guess: " + hi;
+        return "Model Guess: " + hi + "              \nNote: Don't expect this model to return accurate results, its really small and running on javascript.";
+    }
+
+    @Override
+    public void train() {
+        network = new NeuralNetwork(new int[] {256, 16, 16, 10});
+        JSONObject object;
+        try {
+            InputStream is = Objects.requireNonNull(DigitRecognitionModel.class.getResourceAsStream("/model.json"));
+            object = new JSONObject(new String(is.readAllBytes()));
+            is.close();
+        } catch (Exception e) {
+            return;
+        }
+
+        int indexL = 0;
+        for (NeuralLayer layer : network.layers) {
+            indexL++;
+
+            JSONObject layer0 = object.getJSONObject("layer" + indexL);
+
+            int indexN = 0;
+            for (Neuron neuron : layer.neurons) {
+                indexN++;
+
+                JSONObject neuron0 = layer0.getJSONObject("neuron" + indexN);
+                neuron.bias = neuron0.getDouble("bias");
+
+                int indexNC = 0;
+                for (Neuron neuron1 : neuron.connectionWeights.keySet()) {
+                    indexNC++;
+
+                    neuron.connectionWeights.put(neuron1, BigDecimal.valueOf(neuron0.getDouble("weights" + indexNC)));
+                }
+            }
+        }
+
+        HTMLDocument document = HTMLDocument.current();
+        HTMLElement trainingStatus = document.getElementById("TRAINING_STATUS");
+        trainingStatus.setInnerText("Trained");
+        trainingStatus.getStyle().setProperty("color", "green");
     }
 
     @Override

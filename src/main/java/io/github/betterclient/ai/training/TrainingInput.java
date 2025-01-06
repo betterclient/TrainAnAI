@@ -3,13 +3,13 @@ package io.github.betterclient.ai.training;
 import java.util.Arrays;
 
 public class TrainingInput {
-    public float[] inputs;
+    public double[] inputs;
     /**
      * Expected results for input
      */
-    public float[] expected;
+    public double[] expected;
 
-    public TrainingInput(float[] inputs, float[] expected) {
+    public TrainingInput(double[] inputs, double[] expected) {
         this.inputs = inputs;
         this.expected = expected;
     }

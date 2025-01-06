@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -20,10 +21,10 @@ public class MNISTParser {
         File f = new File("D:\\DOWNLOADS\\MNIST Dataset\\MNIST Dataset\\MNIST - JPG - training");
         File out = new File("D:\\DOWNLOADS\\MNIST Dataset\\parsed");
 
-        for (File file : f.listFiles()) {
+        for (File file : Objects.requireNonNull(f.listFiles())) {
             List<JSONObject> outt = new ArrayList<>();
             int index = 0;
-            for (File listFile : file.listFiles()) {
+            for (File listFile : Objects.requireNonNull(file.listFiles())) {
                 if (index > 100) {
                     break;
                 }

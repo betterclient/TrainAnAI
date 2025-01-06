@@ -30,7 +30,7 @@ public abstract class Model {
     public abstract String getOutput();
     public abstract List<TrainingInput> getTrainingSamples();
 
-    public final void train() {
+    public void train() {
         List<Integer> sizes = new ArrayList<>();
         Arrays.stream(layerSizes).forEach(sizes::add);
         sizes.removeFirst(); sizes.removeLast();

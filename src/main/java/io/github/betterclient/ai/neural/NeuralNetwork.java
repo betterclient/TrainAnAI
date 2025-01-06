@@ -1,12 +1,9 @@
 package io.github.betterclient.ai.neural;
 
-import io.github.betterclient.ai.training.PreCalculation;
 import io.github.betterclient.ai.training.TrainingInput;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class NeuralNetwork {
     public List<NeuralLayer> layers = new ArrayList<>();
@@ -40,7 +37,7 @@ public class NeuralNetwork {
         }
     }
 
-    public float[] forward(float[] inputs) {
+    public double[] forward(double[] inputs) {
         for (int i = 1; i < layers.size(); i++) {
             NeuralLayer layer = layers.get(i);
 
@@ -49,23 +46,23 @@ public class NeuralNetwork {
         return inputs;
     }
 
-    public float cost(List<TrainingInput> samples) {
-        float cost = 0;
+    public double cost(List<TrainingInput> samples) {
+        double cost = 0;
         for (TrainingInput data : samples) {
-            float[] actualOutput = this.forward(data.inputs);
-
-            for (int i = 0; i < actualOutput.length; i++) {
-                float error = actualOutput[i] - data.expected[i];
-                cost += error * error;
-            }
+            cost += cost(data);
         }
         return cost;
     }
 
-    public List<NeuralLayer> layersW() {
-        List<NeuralLayer> a = new ArrayList<>(layers);
-        a.removeFirst();
-        return a;
+    public double cost(TrainingInput sample) {
+        double cost = 0;
+        double[] actualOutput = this.forward(sample.inputs);
+
+        for (int i = 0; i < actualOutput.length; i++) {
+            double error = actualOutput[i] - sample.expected[i];
+            cost += error * error;
+        }
+        return cost;
     }
 
     public int getParameterSize() {
