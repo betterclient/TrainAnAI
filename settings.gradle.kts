@@ -1,2 +1,2 @@
-rootProject.name = "GreatAI"
+rootProject.name = "TrainAnAI"
 
